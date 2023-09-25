@@ -12,43 +12,58 @@
 -перемещаться по массиву(-ам) необходимо только через указательную арифметику – Pointer Arithmetic[arr[i][j] - > *(*(arr + i) + j)];
 -использовать только динамическое выделение памяти
 */
+
 #include <iostream>
+int** allocateMemory(int n) {
+    int** arr = new int* [n];
+    for (int i = 0; i < n; i++) {
+        arr[i] = new int[i + 1];
+    }
+    return arr;
+}
 
-void taskTwo() 
-{
-	int* height = new int;
-	int* i = new int;
-	int* j = new int;
-	int* k = new int;
+// Функция для освобождения памяти, выделенной под треугольник Фибоначчи
+void deallocateMemory(int** arr, int n) {
+    for (int i = 0; i < n; i++) {
+        delete[] arr[i];
+    }
+    delete[] arr;
+}
 
-	std::cout << "Введите нужное количество строк пирамиды: ";
-	std::cin >> *height;
-
-	std::cout << '\n';
-	for (*i = 0; *i <= *height; ++*i) 
-	{
-		for (*j = 0; *j < *height - *i; ++*j) 
-		{
-			std::cout << " ";
-		}
+// Функция для заполнения треугольника Фибоначчи
+void fillFibonacciTriangle(int** arr, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (i < 2 || j == 0 || j == i) {
+                arr[i][j] = 1;
+            }
+            else {
+                arr[i][j] = arr[i - 1][j - 1] + arr[i - 1][j];
+            }
 		
-		for (*k = 0; *k <= *i; ++*k) 
-		{
-			printf("%d ", hosoyaNumber(i, k));
-		}
-		std::cout << "\n";
-	}
-	delete height, i, j, k;
+        }
+    }
 }
 
-int hosoyaNumber(int* n, int* i) 
-{
-	return fibNumber(*i + 1) * fibNumber(*n - *i + 1);
+// Функция для вывода треугольника Фибоначчи
+void printFibonacciTriangle(int** arr, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= i; j++) {
+            std::cout << arr[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
-int fibNumber(int n) 
-{
-	if (n == 0) return 0;
-	if (n == 1) return 1;
-	return fibNumber(n - 1) + fibNumber(n - 2);
+int main() {
+    int n;
+    std::cout << " Введите количество строк: ";
+    std::cin >> n;
+
+    int** arr = allocateMemory(n);
+    fillFibonacciTriangle(arr, n);
+    printFibonacciTriangle(arr, n);
+    deallocateMemory(arr, n);
+
+    return 0;
 }
